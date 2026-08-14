@@ -3,7 +3,8 @@ const envFile = `.env.${process.env.NODE_ENV}`;
 dotenv.config({
     path: envFile,
 });
-
+console.log("NODE_ENV:", process.env.NODE_ENV);
+console.log("DATABASEURL exists:", !!process.env.DATABASEURL);
 export const config = {
     env: process.env.ENV,
     PORT: process.env.PORT,

@@ -38,6 +38,8 @@ export default function LoginPage() {
   const [loggedIn, setLoggedIn] = useState(false);
   const navigate = useNavigate()
 
+  console.log("api---", API_URL);
+
 
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }));

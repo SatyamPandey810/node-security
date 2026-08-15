@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { API_URL } from "../config/api";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import api from "../config/api";
 
 const COLORS = {
   bg: "#0A0E14",
@@ -38,7 +38,6 @@ export default function LoginPage() {
   const [loggedIn, setLoggedIn] = useState(false);
   const navigate = useNavigate()
 
-  console.log("api---", API_URL);
 
 
   function update(field, value) {
@@ -56,29 +55,38 @@ export default function LoginPage() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+
     if (!validate()) return;
 
     setApiError("");
     setLoading(true);
+
     try {
-      const res = await fetch(`${API_URL}/user/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: form.email, password: form.password }),
+      const response = await api.post("/user/login", {
+        email: form.email,
+        password: form.password,
       });
-      const data = await res.json();
-      if (data.success || res.ok) {
-        toast.success(data.message)
-        navigate("/")
-      }
-      if (!res.ok || !data.success) {
-        toast.error(data.message)
-        setApiError(data.message || "Invalid email or password.");
+
+      const data = response.data;
+
+      if (data.success) {
+        toast.success(data.message);
+        setLoggedIn(true);
+        navigate("/");
         return;
       }
-      setLoggedIn(true);
+
+      toast.error(data.message);
+      setApiError(data.message || "Invalid email or password.");
     } catch (err) {
-      setApiError("Network error. Check your connection and try again.");
+      console.error("Login error:", err);
+
+      const message =
+        err.response?.data?.message ||
+        "Network error. Check your connection and try again.";
+
+      toast.error(message);
+      setApiError(message);
     } finally {
       setLoading(false);
     }
@@ -188,7 +196,6 @@ export default function LoginPage() {
           </svg>
           Continue with Google
         </button>
-
         <p className="mt-8 text-center text-sm" style={{ color: COLORS.muted }}>
           Don't have an account?{" "}
           <Link to="/sign-up" className="font-medium" style={{ color: COLORS.amber }}>Sign up</Link>

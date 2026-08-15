@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { API_URL } from "../config/api";
 import { toast } from "react-toastify";
+import api from "../config/api";
 
 const COLORS = {
   bg: "#0A0E14",
@@ -64,16 +64,14 @@ export default function RegisterPage() {
     setApiError("");
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/user`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          password: form.password,
-        }),
+           const res = await api.post("/user", {
+        name: form.name,
+        email: form.email,
+        password: form.password,
       });
+
       const data = await res.json();
+
       if (data.success || res.ok) {
         toast.success(data.message)
         navigate("/sign-in")

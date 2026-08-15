@@ -2,7 +2,8 @@ import bcrypt from "bcrypt";
 import { User } from "../model/user.js";
 import jwt from "jsonwebtoken"
 import { config } from "../config/env.config.js";
-import { setAuthCookies } from "../config/cookie.config.js";
+import { clearAuthCookies, setAuthCookies } from "../config/cookie.config.js";
+import { decodeToken } from "../utils/token.js";
 
 export const createUser = async (req, res) => {
     try {
@@ -91,9 +92,8 @@ export const loginUser = async (req, res) => {
         const userResponse = user.toObject();
         delete userResponse.password;
 
-
         setAuthCookies(req, res, user._id, user.role)
-        
+
         return res.status(200).json({
             success: true,
             message: "Login successful",
@@ -109,3 +109,43 @@ export const loginUser = async (req, res) => {
         });
     }
 };
+
+export async function getUser(req, res) {
+    try {
+        const user = await User.findById(req.authUser?.userId).select("email role isActive")
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            })
+        }
+        return res.json(user)
+    } catch (error) {
+        console.error("Get user error:", error)
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
+    }
+}
+
+export async function logOut(req, res) {
+    clearAuthCookies(res)
+    return res.json({
+        message: "Logout successfully"
+    })
+}
+
+export async function refresh(req, res) {
+    try {
+        const refreshToken = req.cookies?.['refresh_token']
+        if (!refreshToken) {
+            return res.json(401).json({
+                message: 'No refresh token'
+            })
+        }
+        decodeToken(refreshToken)
+    } catch (error) {
+
+    }
+
+}

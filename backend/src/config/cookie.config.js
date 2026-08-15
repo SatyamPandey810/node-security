@@ -38,7 +38,7 @@ export function setAuthCookies(req, res, userId, role) {
 
     res.cookie(ACCESS_COOKIE, accessToken, createCookieoption(accessMaxAge))
     res.cookie(REFRESH_COOKIE, refreshToken, createCookieoption(refreshMaxAge))
-    res.cookie(CSRF_COOKIE, csrfToken, createCookieoption(refreshMaxAge))
+    res.cookie(CSRF_COOKIE, csrfToken, createCsrfCookieoption(refreshMaxAge))
 }
 
 export function clearAuthCookies(req, res) {
@@ -56,7 +56,7 @@ export function requireCsrf(req, res, next) {
     const csrfCookie = req.cookies?.[CSRF_COOKIE]
     const csrfHeader = req.header('x-csrf-token')
 
-    if (csrfCookie || csrfHeader || csrfCookie !== csrfHeader) {
+    if (!csrfCookie || !csrfHeader || csrfCookie !== csrfHeader) {
         return res.status(403).json({
             message: "Invalid csrf token"
         })

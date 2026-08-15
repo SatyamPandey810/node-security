@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
-const envFile = `.env.${process.env.NODE_ENV}`;
-dotenv.config({
-    path: envFile,
-});
+const envFile = `.env${process.env.NODE_ENV ? '.' + process.env.NODE_ENV : ''}`; 
+
+dotenv.config({ path: process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : ".env" });
+
 console.log("NODE_ENV:", process.env.NODE_ENV);
 console.log("DATABASEURL exists:", !!process.env.DATABASEURL);
 export const config = {

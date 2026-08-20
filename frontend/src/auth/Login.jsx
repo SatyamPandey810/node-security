@@ -108,7 +108,7 @@ export default function LoginPage() {
         </div>
 
         <h1 className="text-2xl font-semibold text-center" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-          Sign in
+          Login
         </h1>
         <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-5">
           <div>

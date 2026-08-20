@@ -110,10 +110,6 @@ export default function LoginPage() {
         <h1 className="text-2xl font-semibold text-center" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
           Sign in
         </h1>
-        <p className="mt-2 text-sm text-center" style={{ color: COLORS.muted }}>
-          Welcome back. Your monitors kept running without you.
-        </p>
-
         <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-5">
           <div>
             <label className="block text-xs font-medium mb-1.5" style={{ color: COLORS.muted }}>Email</label>
